@@ -29,9 +29,9 @@ mvn clean install
 ```
 
 ## Usage
-1. Run the main class HotelBookingController to start the HTTP server:
+1. Run the main class HotelBookingController to start the HTTP server or If you work with IDE, can right click on the class and run as Java application:
 ```
-java -cp target/classes main.java.com.sample.controller.HotelBookingController or If you work with IDE, can right click on the class and run as Java application
+java -cp target/classes main.java.com.sample.controller.HotelBookingController
 ```
 2. Use a tool like cURL or Postman to make HTTP requests to the API endpoints:
 - Save Booking:
@@ -43,14 +43,15 @@ java -cp target/classes main.java.com.sample.controller.HotelBookingController o
 
 ## Example Requests using post man
 - Save Booking:
-
-	URL: http://localhost:8080/saveBooking
-	Request body: guestName=Roja&roomNumber=100&date=2024-05-11
+```
+URL: http://localhost:8080/saveBooking
+Request body: guestName=Roja&roomNumber=100&date=2024-05-11
+```
 - get available rooms for Booking:
-
-	URL: http://localhost:8080/getAvailableRooms?date=2024-05-11
-
+```
+URL: http://localhost:8080/getAvailableRooms?date=2024-05-11
+```
 - Find Bookings for Guest:
-
-	URL: http://localhost:8080/findBookingsForGuest?guestName=Roja
-
+```
+URL: http://localhost:8080/findBookingsForGuest?guestName=Roja
+```

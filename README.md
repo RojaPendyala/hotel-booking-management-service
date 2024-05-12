@@ -1,6 +1,6 @@
 # Hotel Booking Management Service
 
-This is a simple Java-based microservice to manage the hotel bookings. It contains some features for save room booking, get available list of rooms for a given date, and find booking room numbers for a specific guest.
+This is a simple Java-based microservice to manage the hotel bookings. It contains some features to book the available rooms, get available list of rooms for a given date and find booking room numbers for a specific guest.
 
 ## Features
 
@@ -40,6 +40,12 @@ java -cp target/classes main.java.com.sample.controller.HotelBookingController
   `GET /getAvailableRooms?date={date}`
 - Find Bookings for Guest:
   `GET /findBookingsForGuest?guestName={guestName}`
+3. Use below commands to stop the server:
+```
+netstat  -ano  |  findstr  8080
+
+taskkill /F /PID {processId}
+```
 
 ## Example Requests using post man
 - Save Booking:

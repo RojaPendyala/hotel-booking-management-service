@@ -9,7 +9,7 @@ import main.java.com.sample.dto.HotelBookingDto;
 public interface HotelBookingService {
 
     void saveBooking(HotelBookingDto bookingDto) throws Exception;
-    List<Integer> getAvailableRooms(LocalDate date) throws Exception;
+    List<String> getAvailableRooms(LocalDate date) throws Exception;
     List<HotelBookingDto> findBookingsByGuest(String guestName) throws Exception;
 
 }

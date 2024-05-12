@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +40,11 @@ public class HotelBookingController {
 
     public static void main(String[] args) throws IOException {
     	
-    	CONFIG_PROPERTIES_FILE = new File(".").getCanonicalPath() + File.separator + "config.properties";
+    	CONFIG_PROPERTIES_FILE = new File(".").getCanonicalPath() + File.separator +"resources"+File.separator+ "config.properties";
 
         readProperties();
         String roomNumbers = getProperty("room.numbers");
-        if(roomNumbers != null) {
-        	hotelBookingService = new HotelBookingServiceImpl(roomNumbers);
-        }
+        hotelBookingService = roomNumbers != null?new HotelBookingServiceImpl(roomNumbers):new HotelBookingServiceImpl("");
         
         // Create HTTP server
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -74,7 +73,7 @@ public class HotelBookingController {
                     Map<String, String> params = Utils.parseQuery(requestBody);
 
                     String guestName = params.get("guestName");
-                    int roomNumber = Integer.parseInt(params.get("roomNumber"));
+                    String roomNumber = params.get("roomNumber");
                     LocalDate date = LocalDate.parse(params.get("date"));
 
                     // Save the booking
@@ -124,7 +123,7 @@ public class HotelBookingController {
                     LocalDate date = LocalDate.parse(params.get("date"));
 
                     // get available rooms for the given date
-                    List<Integer> availableRoomNumbers = hotelBookingService.getAvailableRooms(date);
+                    List<String> availableRoomNumbers = hotelBookingService.getAvailableRooms(date);
 
                     // Send response with available rooms
                     String response = availableRoomNumbers != null?"Available Room numbers:"+availableRoomNumbers.toString():"[]";
@@ -134,9 +133,9 @@ public class HotelBookingController {
                         os.write(response.getBytes());
                     }
                 } else {
-                    LOGGER.log(Level.SEVERE, "Error processing available room request", "Http Method not allow");
+                    LOGGER.log(Level.SEVERE, "Error processing available room request", "Http Method not allowed");
 
-                    String response = "{\"error\": \"Method not allow\"}";
+                    String response = "{\"error\": \"Method not allowed\"}";
                     exchange.getResponseHeaders().set("Content-Type", "application/json");
                     exchange.sendResponseHeaders(HttpServletResponse.SC_OK, response.length());
                     exchange.sendResponseHeaders(HttpServletResponse.SC_METHOD_NOT_ALLOWED, response.length());
@@ -169,12 +168,13 @@ public class HotelBookingController {
                     Map<String, String> params = Utils.parseQuery(query);
                     String guestName = params.get("guestName");
 
-                    // Find bookings for the given guest
+                    // Find bookings for the given guest, also can return the below object in the response directly
                     List<HotelBookingDto> bookingsForGuest = hotelBookingService.findBookingsByGuest(guestName);
-
+                    Map<LocalDate, List<String>> bookingMap = bookingsForGuest.stream().collect(Collectors.groupingBy(HotelBookingDto::getDate,Collectors.mapping(
+                    		HotelBookingDto::getRoomNumber, Collectors.toList())));
                     // Send response with bookings for the guest
-                    List<Integer> responseList = bookingsForGuest.stream().map(HotelBookingDto::getRoomNumber).collect(Collectors.toList());
-                    String response = responseList != null?"Booked Room numbers:"+responseList.toString():"[]";
+                    //List<String> responseList = bookingsForGuest.stream().map(d -> "{\"roomNumber\":"+d.getRoomNumber()+",\"date\":"+d.getDate()+"}").collect(Collectors.toList());
+                    String response = bookingMap != null?"Booking details for the guest "+guestName+":"+bookingMap.toString():"{}";
                     exchange.getResponseHeaders().set("Content-Type", "application/json");
                     exchange.sendResponseHeaders(HttpServletResponse.SC_OK, response.length());
                     try (OutputStream os = exchange.getResponseBody()) {

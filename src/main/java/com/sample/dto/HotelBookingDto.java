@@ -5,10 +5,10 @@ import java.time.LocalDate;
 public class HotelBookingDto {
 
     private final String guestName;
-    private final int roomNumber;
+    private final String roomNumber;
     private final LocalDate date;
 
-    public HotelBookingDto(String guestName, int roomNumber, LocalDate date) {
+    public HotelBookingDto(String guestName, String roomNumber, LocalDate date) {
         this.guestName = guestName;
         this.roomNumber = roomNumber;
         this.date = date;
@@ -18,7 +18,7 @@ public class HotelBookingDto {
         return guestName;
     }
 
-    public int getRoomNumber() {
+    public String getRoomNumber() {
         return roomNumber;
     }
 

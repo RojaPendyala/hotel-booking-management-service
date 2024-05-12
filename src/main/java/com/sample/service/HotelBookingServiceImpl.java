@@ -10,9 +10,9 @@ import main.java.com.sample.dto.HotelBookingDto;
 
 public class HotelBookingServiceImpl implements HotelBookingService{
 
-    private List<Integer> listOfAvailableRooms;
+    private List<String> listOfAvailableRooms;
     private Map<LocalDate, List<HotelBookingDto>> bookingsByDateMap;
-    private Map<Integer, List<HotelBookingDto>> bookingsByRoomNumberMap;
+    private Map<String, List<HotelBookingDto>> bookingsByRoomNumberMap;
     private Map<String, List<HotelBookingDto>> bookingsByGuestNameMap;
 
 	
@@ -23,9 +23,11 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         this.bookingsByRoomNumberMap = new ConcurrentHashMap<>();
         this.bookingsByGuestNameMap = new ConcurrentHashMap<>();
         this.bookingsByDateMap = new ConcurrentHashMap<>();
-        for (int i = 0; i < availableRoomsList.size(); i++) {
-        	listOfAvailableRooms.add(Integer.valueOf(availableRoomsList.get(i)));
-        	bookingsByRoomNumberMap.put(Integer.valueOf(availableRoomsList.get(i)), new ArrayList<>());
+        if(availableRoomsList != null) {
+	        for (int i = 0; i < availableRoomsList.size(); i++) {
+	        	listOfAvailableRooms.add(availableRoomsList.get(i));
+	        	bookingsByRoomNumberMap.put(availableRoomsList.get(i), new ArrayList<>());
+	        }
         }
     }
 
@@ -37,7 +39,7 @@ public class HotelBookingServiceImpl implements HotelBookingService{
             // Checking if a booking already a for the given room and date
             for (HotelBookingDto details : bookingsByRoomNumberMap.get(bookingDto.getRoomNumber())) {
                 if (details.getDate().equals(bookingDto.getDate())) {
-                    throw new IllegalArgumentException("Booking already available for the room number " + bookingDto.getRoomNumber() + " on date " + bookingDto.getDate());
+                    throw new IllegalArgumentException("Booking already available for the room number " + bookingDto.getRoomNumber() + " on date " + bookingDto.getDate()+", Please choose another room.");
                 }
             }
             bookingsByDateMap.computeIfAbsent(bookingDto.getDate(), d -> new ArrayList<>()).add(bookingDto);
@@ -50,14 +52,14 @@ public class HotelBookingServiceImpl implements HotelBookingService{
     }
 
     @Override
-    public List<Integer> getAvailableRooms(LocalDate date) throws IllegalArgumentException{
-        List<Integer> availableRoomNumbers = listOfAvailableRooms;
+    public List<String> getAvailableRooms(LocalDate date) throws IllegalArgumentException{
+        List<String> availableRoomNumbers = listOfAvailableRooms;
 
         try {
         	List<HotelBookingDto> hotelBookingList = bookingsByDateMap.get(date);
            
             if(hotelBookingList != null && !hotelBookingList.isEmpty()) {
-            	 List<Integer> availableRoomsList = hotelBookingList.stream().filter(d -> availableRoomNumbers.contains(d.getRoomNumber())).map(HotelBookingDto :: getRoomNumber).collect(Collectors.toList());
+            	 List<String> availableRoomsList = hotelBookingList.stream().filter(d -> availableRoomNumbers.contains(d.getRoomNumber())).map(HotelBookingDto :: getRoomNumber).collect(Collectors.toList());
             	 availableRoomNumbers.removeAll(availableRoomsList);
                
         	}

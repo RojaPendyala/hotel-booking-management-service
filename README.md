@@ -28,6 +28,11 @@ cd hotel-booking-management-service
 mvn clean install
 ```
 
+## Configuration
+
+- Admin can configure the list of available room numbers in config.properties file as a property seperated by comma. 
+- This configuration will provide flexibility to the admin to remove any specific available room from the list incase of any other maintainance issues such as water issue or electricity issues.
+
 ## Usage
 1. Run the main class HotelBookingController to start the HTTP server or If you work with IDE, can right click on the class and run as Java application:
 ```

@@ -181,7 +181,7 @@ public class HotelBookingController {
                         os.write(response.getBytes());
                     }
                 } else {
-                    LOGGER.log(Level.SEVERE, "Error processing booking-for-guest request", "Http Method not allow");
+                    LOGGER.log(Level.SEVERE, "Error processing booking-for-guest request", "Http Method not allowed");
 
                     String response = "{\"error\": \"Method not allow\"}";
                     exchange.getResponseHeaders().set("Content-Type", "application/json");
@@ -193,7 +193,7 @@ public class HotelBookingController {
 
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error processing booking-for-guest request", e);
+                LOGGER.log(Level.SEVERE, "Error while processing booking-for-guest request", e);
 
                 String errorMessage = "{\"error\": "+e.getMessage()+"}";
                 exchange.getResponseHeaders().set("Content-Type", "application/json");

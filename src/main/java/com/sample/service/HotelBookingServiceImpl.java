@@ -53,9 +53,10 @@ public class HotelBookingServiceImpl implements HotelBookingService{
 
     @Override
     public List<String> getAvailableRooms(LocalDate date) throws IllegalArgumentException{
-        List<String> availableRoomNumbers = listOfAvailableRooms;
+        List<String> availableRoomNumbers = new ArrayList<>();
 
         try {
+        	availableRoomNumbers.addAll(this.listOfAvailableRooms);
         	List<HotelBookingDto> hotelBookingList = bookingsByDateMap.get(date);
            
             if(hotelBookingList != null && !hotelBookingList.isEmpty()) {
